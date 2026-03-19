@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Link from "next/link";
+import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
 import { Prototype } from "./Prototype";
 
@@ -12,11 +12,7 @@ export default function StreamingTextPage() {
     <main
       style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}
     >
-      <div style={{ marginBottom: "2rem" }}>
-        <Link href="/prototypes" style={{ fontSize: "14px" }}>
-          {"<- Back to prototypes"}
-        </Link>
-      </div>
+      <BackToHomeLink />
 
       <PrototypeFrame title="Streaming Text">
         <article>
