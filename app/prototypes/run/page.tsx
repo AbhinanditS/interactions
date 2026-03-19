@@ -14,7 +14,7 @@ export default function RunPage() {
     >
       <div style={{ marginBottom: "2rem" }}>
         <Link href="/prototypes" style={{ fontSize: "14px" }}>
-          ← Back to prototypes
+          {"<- Back to prototypes"}
         </Link>
       </div>
 

@@ -14,7 +14,7 @@ export default function RadialTimelinePage() {
     >
       <div style={{ marginBottom: "2rem" }}>
         <Link href="/prototypes" style={{ fontSize: "14px" }}>
-          ← Back to prototypes
+          {"<- Back to prototypes"}
         </Link>
       </div>
 
@@ -27,8 +27,8 @@ export default function RadialTimelinePage() {
           </p>
 
           <p>
-            The interaction uses basic angle geometry—<code>atan2</code>{" "}
-            calculates the angle between the center and pointer position in
+            The interaction uses basic angle geometry with <code>atan2</code> to
+            calculate the angle between the center and pointer position in
             real-time, rotating the hand accordingly. No animation libraries
             needed; pure pointer events and SVG attributes handle the
             responsiveness.

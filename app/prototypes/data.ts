@@ -18,4 +18,10 @@ export const prototypes: PrototypeMetadata[] = [
     description: 'Cursor dot morphing into vertical line on activity bar hover',
     date: '2025-01-02',
   },
+  {
+    slug: 'streaming-text',
+    title: 'Streaming Text',
+    description: 'Token-by-token LLM response demo with speed and shimmer controls',
+    date: '2025-01-03',
+  },
 ]
