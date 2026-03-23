@@ -7,6 +7,13 @@ export interface PrototypeMetadata {
 
 export const prototypes: PrototypeMetadata[] = [
   {
+    slug: 'horizontal-slide-scroll',
+    title: 'Horizontal Slide Scroll',
+    description:
+      'A minimal editorial landing page with scroll-driven horizontal panels and a full-page viewing mode',
+    date: '2025-01-04',
+  },
+  {
     slug: 'radial-timeline',
     title: 'Radial Timeline',
     description: 'Pointer-controlled rotating hand following mouse angle',
