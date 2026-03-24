@@ -7,6 +7,10 @@ export interface PrototypeMetadata {
 
 export const prototypes: PrototypeMetadata[] = [
   {
+    slug: 'layer-collapse',
+    title: 'Layer Collapse',
+    description: 'Skewed stacked cards that compress into the base layer on click',
+    date: '2026-03-24',
     slug: 'horizontal-slide-scroll',
     title: 'Horizontal Slide Scroll',
     description:
