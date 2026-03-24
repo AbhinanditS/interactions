@@ -11,6 +11,11 @@ export const prototypes: PrototypeMetadata[] = [
     title: 'Layer Collapse',
     description: 'Skewed stacked cards that compress into the base layer on click',
     date: '2026-03-24',
+    slug: 'horizontal-slide-scroll',
+    title: 'Horizontal Slide Scroll',
+    description:
+      'A minimal editorial landing page with scroll-driven horizontal panels and a full-page viewing mode',
+    date: '2025-01-04',
   },
   {
     slug: 'radial-timeline',
