@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Text } from "@/components/ui/Text";
 import {
   getPortfolioExplorationBySlug,
   getIterationBySlug,
@@ -51,17 +53,17 @@ export default async function IterationPage({
   }
 
   return (
-    <main style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}>
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title={iteration.title}>
-        <p style={{ marginTop: 0, color: "#666" }}>
+        <Text tone="muted" className="mt-0">
           <Link href={`/portfolio/${exploration.slug}`}>{exploration.title}</Link>
           {" · "}
           {iteration.date}
           {" · "}
           {iteration.status}
-        </p>
+        </Text>
 
         <p>{iteration.summary}</p>
 
@@ -84,6 +86,6 @@ export default async function IterationPage({
           </ul>
         )}
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }
