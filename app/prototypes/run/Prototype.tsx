@@ -100,7 +100,7 @@ export function Prototype() {
     if (!containerRef.current || isKeyboardMode) return;
     const pos = getRelativePosition(containerRef.current);
     setCursorPos(pos);
-  }, [pointer.clientX, pointer.clientY, getRelativePosition, isKeyboardMode]);
+  }, [pointer, getRelativePosition, isKeyboardMode]);
 
   // Track container width for responsive bars
   useEffect(() => {

@@ -68,7 +68,7 @@ export function Prototype() {
     };
 
     updateHandAngle();
-  }, [pointer.clientX, pointer.clientY, dimensions, getRelativePosition, isKeyboardMode]);
+  }, [pointer, dimensions, getRelativePosition, isKeyboardMode]);
 
   useEffect(() => {
     if (!isKeyboardMode) {
