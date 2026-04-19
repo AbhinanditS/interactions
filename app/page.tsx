@@ -29,8 +29,10 @@ export default function PrototypesIndex() {
 
         <ul className="mt-3">
           {portfolioHighlights.map((highlight) => (
-            <li className="ui-text" data-tone="muted" data-size="md" key={highlight}>
-              {highlight}
+            <li key={highlight}>
+              <Text as="span" tone="muted">
+                {highlight}
+              </Text>
             </li>
           ))}
         </ul>
@@ -44,7 +46,7 @@ export default function PrototypesIndex() {
               <Link href={`/prototypes/${proto.slug}`}>
                 <strong>{proto.title}</strong>
               </Link>
-              <Text tone="muted" className="mt-1">
+              <Text as="div" tone="muted" className="mt-1">
                 {proto.description}
               </Text>
               <Text as="small" tone="subtle">
