@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { HorizontalSlideScrollExperience } from "./Prototype";
 
 export const metadata: Metadata = {
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function HorizontalSlideScrollPage() {
   return (
-    <main style={{ maxWidth: "1200px", margin: "0 auto", paddingBottom: "4rem" }}>
+    <Container as="main" size="xl" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title="Horizontal Slide Scroll">
@@ -34,9 +36,9 @@ export default function HorizontalSlideScrollPage() {
             oversized typography, and generous spacing.
           </p>
 
-          <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <Section as="div" space="md" className="demo-block">
             <HorizontalSlideScrollExperience />
-          </div>
+          </Section>
 
           <h3>Technical Notes</h3>
           <ul>
@@ -47,6 +49,6 @@ export default function HorizontalSlideScrollPage() {
           </ul>
         </article>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }

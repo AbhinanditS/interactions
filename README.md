@@ -36,6 +36,11 @@ Each prototype lives in `app/prototypes/[slug]/` with:
 - `Prototype.tsx` - Interactive component
 - `page.tsx` - Page layout with prose
 
+## Content Format
+
+- Route content is authored directly in `page.tsx` files in the App Router.
+- MDX is not currently configured; if we need mixed markdown + JSX later, we can add MDX back with a concrete route.
+
 ## Principles
 
 - Writing, code, and interaction live together

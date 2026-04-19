@@ -1,48 +1,46 @@
 import Link from "next/link";
-import { BackToHomeLink } from "../../components/BackToHomeLink";
+import { Metadata } from "next";
+import { BackToHomeLink } from "@/components/BackToHomeLink";
+import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { formatIterationCount } from "@/lib/content/formatters";
+import { Container } from "@/components/ui/Container";
+import { Text } from "@/components/ui/Text";
+import { portfolioExplorations } from "./data";
 
-const portfolioHighlights = [
-  {
-    title: "Narrative-driven interaction studies",
-    description:
-      "Interaction concepts that were iterated from early prototype ideas into presentable case-study snapshots.",
-    href: "/prototypes/streaming-text",
-  },
-  {
-    title: "Motion and timing explorations",
-    description:
-      "Prototype work focused on pacing, transitions, and responsive movement behaviors.",
-    href: "/prototypes/horizontal-slide-scroll",
-  },
-  {
-    title: "UI system experiments",
-    description:
-      "Reusable interaction patterns and component ideas prepared for deeper product review.",
-    href: "/prototypes/layer-collapse",
-  },
-];
+export const metadata: Metadata = {
+  title: "Portfolio",
+  description:
+    "Explorations and shipped iteration history, kept separate from prototypes.",
+};
 
-export default function PortfolioPage() {
+export default function PortfolioIndexPage() {
   return (
-    <main style={{ maxWidth: "800px", margin: "0 auto" }}>
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
-      <h1>Portfolio Iterations</h1>
-      <p style={{ color: "#666" }}>
-        Curated explorations and refinements from prototype work.
-      </p>
 
-      <ul style={{ listStyle: "none", marginLeft: 0, paddingLeft: 0 }}>
-        {portfolioHighlights.map((item) => (
-          <li key={item.title} style={{ marginBottom: "1.25rem" }}>
-            <Link href={item.href}>
-              <strong>{item.title}</strong>
-            </Link>
-            <p style={{ marginTop: "0.25rem", color: "#666", marginBottom: 0 }}>
-              {item.description}
-            </p>
-          </li>
-        ))}
-      </ul>
-    </main>
+      <PrototypeFrame title="Portfolio">
+        <p className="mt-0">
+          A catalog of product explorations and shipped iterations. Prototypes
+          stay in <code>/prototypes</code> and this section tracks portfolio
+          history.
+        </p>
+
+        <ul className="list-unstyled list-gap-lg mt-5">
+          {portfolioExplorations.map((exploration) => (
+            <li key={exploration.slug}>
+              <Link href={`/portfolio/${exploration.slug}`}>
+                <strong>{exploration.title}</strong>
+              </Link>
+              <Text tone="muted" className="meta-copy">
+                {exploration.summary}
+              </Text>
+              <Text as="small" tone="subtle">
+                {formatIterationCount(exploration.iterations.length)}
+              </Text>
+            </li>
+          ))}
+        </ul>
+      </PrototypeFrame>
+    </Container>
   );
 }
