@@ -75,7 +75,7 @@ export function Prototype() {
   const [regenerationCount, setRegenerationCount] = useState(0);
 
   const configuredSeed =
-    searchParams.get(SEED_QUERY_PARAM) || DEFAULT_ACTIVITY_SEED;
+    searchParams.get(SEED_QUERY_PARAM)?.trim() || DEFAULT_ACTIVITY_SEED;
   const isExplorationMode = searchParams.get(EXPLORE_QUERY_PARAM) === "1";
   const activitySeed = `${configuredSeed}:${regenerationCount}`;
 
