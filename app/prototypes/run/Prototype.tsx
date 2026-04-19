@@ -2,6 +2,8 @@
 
 import { useRef, useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
+import { createSeededRandom, type RandomSource } from "@/lib/random";
 import { usePointer } from "@/lib/usePointer";
 
 type ActivityType = "run" | "ride";
@@ -13,26 +15,30 @@ interface Activity {
   type: ActivityType;
 }
 
+const DEFAULT_ACTIVITY_SEED = "run-prototype-default-seed-v1";
+const SEED_QUERY_PARAM = "seed";
+const EXPLORE_QUERY_PARAM = "explore";
+
 // Generate mock activity data for the year
-function generateMockData(): Activity[] {
+function generateMockData(random: RandomSource): Activity[] {
   const activities: Activity[] = [];
   const startDate = new Date("2025-01-01");
   const endDate = new Date("2025-12-28");
 
   for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
     // ~60% chance of activity on any given day
-    if (Math.random() > 0.4) {
-      const isRun = Math.random() > 0.3;
+    if (random() > 0.4) {
+      const isRun = random() > 0.3;
       const distance = isRun
-        ? 3 + Math.random() * 15 // 3-18km for runs
-        : 10 + Math.random() * 40; // 10-50km for rides
+        ? 3 + random() * 15 // 3-18km for runs
+        : 10 + random() * 40; // 10-50km for rides
 
       activities.push({
         date: d.toISOString().split("T")[0],
         distance: Math.round(distance * 100) / 100,
         pace: isRun
-          ? `${(4.5 + Math.random() * 2).toFixed(1)}` // 4:30-6:30 min/km
-          : `${(20 + Math.random() * 15).toFixed(1)}`, // 20-35 km/h
+          ? `${(4.5 + random() * 2).toFixed(1)}` // 4:30-6:30 min/km
+          : `${(20 + random() * 15).toFixed(1)}`, // 20-35 km/h
         type: isRun ? "run" : "ride",
       });
     }
@@ -56,14 +62,24 @@ const RideIcon = () => (
 export function Prototype() {
   const containerRef = useRef<HTMLDivElement>(null);
   const barsRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
   const { pointer, getRelativePosition } = usePointer();
 
   const [isOverBars, setIsOverBars] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [containerWidth, setContainerWidth] = useState(800);
+  const [regenerationCount, setRegenerationCount] = useState(0);
 
-  const activities = useMemo(() => generateMockData(), []);
+  const configuredSeed =
+    searchParams.get(SEED_QUERY_PARAM) ?? DEFAULT_ACTIVITY_SEED;
+  const isExplorationMode = searchParams.get(EXPLORE_QUERY_PARAM) === "1";
+  const activitySeed = `${configuredSeed}:${regenerationCount}`;
+
+  const activities = useMemo(() => {
+    const random = createSeededRandom(activitySeed);
+    return generateMockData(random);
+  }, [activitySeed]);
   const totalDistance = useMemo(
     () => activities.reduce((sum, a) => sum + a.distance, 0),
     [activities]
@@ -169,15 +185,35 @@ export function Prototype() {
             There&apos;s no tomorrow like today
           </span>
         </div>
-        <span
-          style={{
-            fontSize: 14,
-            fontFamily: "monospace",
-            color: "#666",
-          }}
-        >
-          {Math.round(totalDistance).toLocaleString()}km
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {isExplorationMode && (
+            <button
+              type="button"
+              onClick={() => setRegenerationCount((count) => count + 1)}
+              style={{
+                border: "1px solid #d0d0d0",
+                borderRadius: 6,
+                background: "#fff",
+                color: "#444",
+                fontSize: 12,
+                fontFamily: "monospace",
+                padding: "4px 8px",
+                cursor: "pointer",
+              }}
+            >
+              Regenerate
+            </button>
+          )}
+          <span
+            style={{
+              fontSize: 14,
+              fontFamily: "monospace",
+              color: "#666",
+            }}
+          >
+            {Math.round(totalDistance).toLocaleString()}km
+          </span>
+        </div>
       </div>
 
       {/* Tooltip */}

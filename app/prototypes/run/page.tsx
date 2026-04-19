@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
 import { Container } from "@/components/ui/Container";
@@ -43,7 +44,9 @@ export default function RunPage() {
           </p>
 
           <Section as="div" space="md" className="demo-block">
-            <Prototype />
+            <Suspense fallback={null}>
+              <Prototype />
+            </Suspense>
           </Section>
 
           <h3>Technical Notes</h3>
