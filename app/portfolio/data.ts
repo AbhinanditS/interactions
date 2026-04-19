@@ -1,11 +1,23 @@
-export type IterationStatus = "figma" | "wired" | "built" | "shipped";
+export type PortfolioStatus =
+  | "planned"
+  | "in-progress"
+  | "figma"
+  | "wired"
+  | "built"
+  | "shipped";
+
+export interface PortfolioLink {
+  label: string;
+  href: string;
+}
 
 export interface PortfolioIteration {
   slug: string;
   title: string;
-  summary: string;
-  status: IterationStatus;
+  summary?: string;
+  status: PortfolioStatus;
   date: string;
+  links: PortfolioLink[];
   liveUrl?: string;
   figmaUrl?: string;
 }
@@ -13,7 +25,10 @@ export interface PortfolioIteration {
 export interface PortfolioExploration {
   slug: string;
   title: string;
+  date: string;
+  status: PortfolioStatus;
   summary: string;
+  links: PortfolioLink[];
   iterations: PortfolioIteration[];
 }
 
@@ -21,8 +36,14 @@ export const portfolioExplorations: PortfolioExploration[] = [
   {
     slug: "reading-flow",
     title: "Reading Flow",
+    date: "2026-03-11",
+    status: "shipped",
     summary:
       "Exploring long-form reading interactions that balance focus, progress awareness, and smooth navigation.",
+    links: [
+      { label: "Prototype", href: "/prototypes/horizontal-slide-scroll" },
+      { label: "Live", href: "https://example.com/reading-flow" },
+    ],
     iterations: [
       {
         slug: "concept-wireframes",
@@ -32,6 +53,7 @@ export const portfolioExplorations: PortfolioExploration[] = [
         status: "figma",
         date: "2026-02-05",
         figmaUrl: "https://www.figma.com/",
+        links: [{ label: "Figma", href: "https://www.figma.com/" }],
       },
       {
         slug: "sticky-waypoint-build",
@@ -40,6 +62,12 @@ export const portfolioExplorations: PortfolioExploration[] = [
           "Built a responsive waypoint rail that tracks section entry and keeps context during long reading sessions.",
         status: "built",
         date: "2026-02-22",
+        links: [
+          {
+            label: "Prototype",
+            href: "/prototypes/horizontal-slide-scroll",
+          },
+        ],
       },
       {
         slug: "v1-ship",
@@ -49,14 +77,21 @@ export const portfolioExplorations: PortfolioExploration[] = [
         status: "shipped",
         date: "2026-03-11",
         liveUrl: "https://example.com/reading-flow",
+        links: [{ label: "Live", href: "https://example.com/reading-flow" }],
       },
     ],
   },
   {
     slug: "assistant-sidebar",
     title: "Assistant Sidebar",
+    date: "2026-03-29",
+    status: "shipped",
     summary:
       "Experimenting with in-context assistant surfaces that can be expanded without taking over the primary workspace.",
+    links: [
+      { label: "Prototype", href: "/prototypes/layer-collapse" },
+      { label: "Live", href: "https://example.com/assistant-sidebar" },
+    ],
     iterations: [
       {
         slug: "interaction-map",
@@ -65,6 +100,7 @@ export const portfolioExplorations: PortfolioExploration[] = [
           "Mapped sidebar entry points, open states, and dismiss behavior in lightweight storyboards.",
         status: "wired",
         date: "2026-01-14",
+        links: [{ label: "Prototype", href: "/prototypes/layer-collapse" }],
       },
       {
         slug: "production-rollout",
@@ -74,15 +110,20 @@ export const portfolioExplorations: PortfolioExploration[] = [
         status: "shipped",
         date: "2026-03-29",
         liveUrl: "https://example.com/assistant-sidebar",
+        links: [
+          { label: "Live", href: "https://example.com/assistant-sidebar" },
+        ],
       },
     ],
   },
 ];
 
+export function getPortfolioExplorationBySlug(slug: string) {
+  return portfolioExplorations.find((exploration) => exploration.slug === slug);
+}
+
 export function getExplorationBySlug(explorationSlug: string) {
-  return portfolioExplorations.find(
-    (exploration) => exploration.slug === explorationSlug,
-  );
+  return getPortfolioExplorationBySlug(explorationSlug);
 }
 
 export function getIterationBySlug(
