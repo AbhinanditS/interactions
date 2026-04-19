@@ -1,5 +1,6 @@
-import { prototypes } from "./prototypes/data";
 import Link from "next/link";
+import { formatDisplayDate } from "@/lib/content/formatters";
+import { prototypes } from "./prototypes/data";
 
 const portfolioHighlights = [
   "Narrative-driven interaction studies",
@@ -53,6 +54,7 @@ export default function PrototypesIndex() {
               <p style={{ marginTop: "0.25rem", color: "#666", marginBottom: 0 }}>
                 {proto.description}
               </p>
+              <small style={{ color: "#777" }}>{formatDisplayDate(proto.date)}</small>
             </li>
           ))}
         </ul>

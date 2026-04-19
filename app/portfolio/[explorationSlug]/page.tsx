@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { formatStatusWithDate } from "@/lib/content/formatters";
 import { getPortfolioExplorationBySlug, portfolioExplorations } from "../data";
 
 export async function generateStaticParams() {
@@ -56,9 +57,7 @@ export default async function ExplorationPage({
                 <strong>{iteration.title}</strong>
               </Link>
               <div style={{ marginTop: "0.3rem", color: "#666" }}>
-                <small>
-                  {iteration.status} · {iteration.date}
-                </small>
+                <small>{formatStatusWithDate(iteration.status, iteration.date)}</small>
               </div>
             </li>
           ))}

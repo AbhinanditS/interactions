@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { formatIterationCount } from "@/lib/content/formatters";
 import { portfolioExplorations } from "./data";
 
 export const metadata: Metadata = {
@@ -32,8 +33,7 @@ export default function PortfolioIndexPage() {
                 {exploration.summary}
               </p>
               <small style={{ color: "#777" }}>
-                {exploration.iterations.length} iteration
-                {exploration.iterations.length === 1 ? "" : "s"}
+                {formatIterationCount(exploration.iterations.length)}
               </small>
             </li>
           ))}
