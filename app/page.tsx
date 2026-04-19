@@ -29,7 +29,9 @@ export default function PrototypesIndex() {
 
         <ul className="mt-3">
           {portfolioHighlights.map((highlight) => (
-            <li key={highlight}>{highlight}</li>
+            <Text as="li" tone="muted" key={highlight}>
+              {highlight}
+            </Text>
           ))}
         </ul>
       </Section>
