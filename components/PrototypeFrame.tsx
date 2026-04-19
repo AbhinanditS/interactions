@@ -1,6 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
+import { Card } from "@/components/ui/Card";
+import { Container } from "@/components/ui/Container";
 
 interface PrototypeFrameProps {
   children: ReactNode;
@@ -9,24 +11,9 @@ interface PrototypeFrameProps {
 
 export function PrototypeFrame({ children, title }: PrototypeFrameProps) {
   return (
-    <div
-      style={{
-        maxWidth: "1200px",
-        margin: "0 auto",
-        padding: "2rem 0",
-      }}
-    >
-      {title && <h1 style={{ marginBottom: "1rem" }}>{title}</h1>}
-      <div
-        style={{
-          border: "1px solid #eee",
-          borderRadius: "8px",
-          padding: "2rem",
-          background: "#fff",
-        }}
-      >
-        {children}
-      </div>
-    </div>
+    <Container size="xl" className="py-frame">
+      {title && <h1 className="mb-4">{title}</h1>}
+      <Card>{children}</Card>
+    </Container>
   );
 }

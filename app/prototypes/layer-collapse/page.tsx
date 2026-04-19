@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Prototype } from "./Prototype";
 
 export const metadata: Metadata = {
@@ -9,9 +11,7 @@ export const metadata: Metadata = {
 
 export default function LayerCollapsePage() {
   return (
-    <main
-      style={{ maxWidth: "980px", margin: "0 auto", paddingBottom: "4rem" }}
-    >
+    <Container as="main" size="lg" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title="Layer Collapse">
@@ -27,11 +27,11 @@ export default function LayerCollapsePage() {
             as a layered fold-down rather than a simple fade.
           </p>
 
-          <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <Section as="div" space="md" className="demo-block">
             <Prototype />
-          </div>
+          </Section>
         </article>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }
