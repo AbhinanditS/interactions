@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Text } from "@/components/ui/Text";
 import { getPortfolioExplorationBySlug, portfolioExplorations } from "../data";
 
 export async function generateStaticParams() {
@@ -42,28 +44,28 @@ export default async function ExplorationPage({
   }
 
   return (
-    <main style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}>
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title={exploration.title}>
-        <p style={{ marginTop: 0 }}>{exploration.summary}</p>
+        <p className="mt-0">{exploration.summary}</p>
 
         <h3>Iterations</h3>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        <ul className="list-unstyled list-gap-md">
           {exploration.iterations.map((iteration) => (
-            <li key={iteration.slug} style={{ marginBottom: "1rem" }}>
+            <li key={iteration.slug}>
               <Link href={`/portfolio/${exploration.slug}/${iteration.slug}`}>
                 <strong>{iteration.title}</strong>
               </Link>
-              <div style={{ marginTop: "0.3rem", color: "#666" }}>
+              <Text as="div" tone="muted" className="meta-row">
                 <small>
                   {iteration.status} · {iteration.date}
                 </small>
-              </div>
+              </Text>
             </li>
           ))}
         </ul>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }
