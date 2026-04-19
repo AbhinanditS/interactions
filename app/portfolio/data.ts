@@ -122,15 +122,11 @@ export function getPortfolioExplorationBySlug(slug: string) {
   return portfolioExplorations.find((exploration) => exploration.slug === slug);
 }
 
-export function getExplorationBySlug(explorationSlug: string) {
-  return getPortfolioExplorationBySlug(explorationSlug);
-}
-
 export function getIterationBySlug(
   explorationSlug: string,
   iterationSlug: string,
 ) {
-  const exploration = getExplorationBySlug(explorationSlug);
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
 
   if (!exploration) {
     return undefined;

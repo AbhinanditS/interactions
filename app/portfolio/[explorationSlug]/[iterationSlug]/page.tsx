@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
 import {
-  getExplorationBySlug,
+  getPortfolioExplorationBySlug,
   getIterationBySlug,
   portfolioExplorations,
 } from "../../data";
@@ -24,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ explorationSlug: string; iterationSlug: string }>;
 }): Promise<Metadata> {
   const { explorationSlug, iterationSlug } = await params;
-  const exploration = getExplorationBySlug(explorationSlug);
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
   const iteration = getIterationBySlug(explorationSlug, iterationSlug);
 
   if (!exploration || !iteration) {
@@ -43,7 +43,7 @@ export default async function IterationPage({
   params: Promise<{ explorationSlug: string; iterationSlug: string }>;
 }) {
   const { explorationSlug, iterationSlug } = await params;
-  const exploration = getExplorationBySlug(explorationSlug);
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
   const iteration = getIterationBySlug(explorationSlug, iterationSlug);
 
   if (!exploration || !iteration) {

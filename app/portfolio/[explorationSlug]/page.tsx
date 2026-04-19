@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
-import { getExplorationBySlug, portfolioExplorations } from "../data";
+import { getPortfolioExplorationBySlug, portfolioExplorations } from "../data";
 
 export async function generateStaticParams() {
   return portfolioExplorations.map((exploration) => ({
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ explorationSlug: string }>;
 }): Promise<Metadata> {
   const { explorationSlug } = await params;
-  const exploration = getExplorationBySlug(explorationSlug);
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
 
   if (!exploration) {
     return {};
@@ -35,7 +35,7 @@ export default async function ExplorationPage({
   params: Promise<{ explorationSlug: string }>;
 }) {
   const { explorationSlug } = await params;
-  const exploration = getExplorationBySlug(explorationSlug);
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
 
   if (!exploration) {
     notFound();
