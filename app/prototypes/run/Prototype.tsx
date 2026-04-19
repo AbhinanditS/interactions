@@ -74,9 +74,14 @@ export function Prototype() {
   const [containerWidth, setContainerWidth] = useState(800);
   const [regenerationCount, setRegenerationCount] = useState(0);
 
-  const configuredSeed =
-    searchParams.get(SEED_QUERY_PARAM)?.trim() || DEFAULT_ACTIVITY_SEED;
-  const isExplorationMode = searchParams.get(EXPLORE_QUERY_PARAM) === "1";
+  const configuredSeed = useMemo(
+    () => searchParams.get(SEED_QUERY_PARAM)?.trim() || DEFAULT_ACTIVITY_SEED,
+    [searchParams]
+  );
+  const isExplorationMode = useMemo(
+    () => searchParams.get(EXPLORE_QUERY_PARAM) === "1",
+    [searchParams]
+  );
   const activitySeed = `${configuredSeed}:${regenerationCount}`;
 
   const activities = useMemo(() => {
