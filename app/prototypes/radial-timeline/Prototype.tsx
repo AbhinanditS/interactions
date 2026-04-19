@@ -39,7 +39,7 @@ export function Prototype() {
       if (!entry) return;
 
       const measuredWidth = entry.contentRect.width;
-      const size = Math.min(measuredWidth, maxSize) || maxSize;
+      const size = Math.min(measuredWidth, maxSize);
 
       setDimensions({ width: size, height: size });
     });
