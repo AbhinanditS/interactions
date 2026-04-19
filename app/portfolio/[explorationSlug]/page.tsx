@@ -1,67 +1,69 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { PortfolioIterationList } from '@/components/PortfolioIterationList'
-import { getPortfolioExplorationBySlug, portfolioExplorations } from '../data'
+import Link from "next/link";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BackToHomeLink } from "@/components/BackToHomeLink";
+import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { getPortfolioExplorationBySlug, portfolioExplorations } from "../data";
 
 export async function generateStaticParams() {
   return portfolioExplorations.map((exploration) => ({
     explorationSlug: exploration.slug,
-  }))
+  }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ explorationSlug: string }>
+  params: Promise<{ explorationSlug: string }>;
 }): Promise<Metadata> {
-  const { explorationSlug } = await params
-  const exploration = getPortfolioExplorationBySlug(explorationSlug)
+  const { explorationSlug } = await params;
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
 
   if (!exploration) {
-    return {}
+    return {};
   }
 
   return {
     title: `${exploration.title} · Portfolio`,
-  }
+    description: exploration.summary,
+  };
 }
 
-export default async function PortfolioExplorationPage({
+export default async function ExplorationPage({
   params,
 }: {
-  params: Promise<{ explorationSlug: string }>
+  params: Promise<{ explorationSlug: string }>;
 }) {
-  const { explorationSlug } = await params
-  const exploration = getPortfolioExplorationBySlug(explorationSlug)
+  const { explorationSlug } = await params;
+  const exploration = getPortfolioExplorationBySlug(explorationSlug);
 
   if (!exploration) {
-    notFound()
+    notFound();
   }
 
   return (
-    <main style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <p style={{ marginBottom: '1rem' }}>
-        <Link href="/portfolio">← Back to all explorations</Link>
-      </p>
+    <main style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}>
+      <BackToHomeLink />
 
-      <p style={{ marginBottom: '0.25rem', color: '#666' }}>
-        {exploration.date} · {exploration.status}
-      </p>
-      <h1 style={{ marginTop: 0 }}>{exploration.title}</h1>
-      <p>{exploration.summary}</p>
+      <PrototypeFrame title={exploration.title}>
+        <p style={{ marginTop: 0 }}>{exploration.summary}</p>
 
-      <h2>Exploration Links</h2>
-      <ul>
-        {exploration.links.map((link) => (
-          <li key={`${exploration.slug}-${link.href}`}>
-            <Link href={link.href}>{link.label}</Link>
-          </li>
-        ))}
-      </ul>
-
-      <h2>Iterations</h2>
-      <PortfolioIterationList iterations={exploration.iterations} />
+        <h3>Iterations</h3>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {exploration.iterations.map((iteration) => (
+            <li key={iteration.slug} style={{ marginBottom: "1rem" }}>
+              <Link href={`/portfolio/${exploration.slug}/${iteration.slug}`}>
+                <strong>{iteration.title}</strong>
+              </Link>
+              <div style={{ marginTop: "0.3rem", color: "#666" }}>
+                <small>
+                  {iteration.status} · {iteration.date}
+                </small>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </PrototypeFrame>
     </main>
-  )
+  );
 }
