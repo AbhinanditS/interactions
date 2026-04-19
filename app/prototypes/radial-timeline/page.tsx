@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Prototype } from "./Prototype";
 
 export const metadata: Metadata = {
@@ -9,9 +11,7 @@ export const metadata: Metadata = {
 
 export default function RadialTimelinePage() {
   return (
-    <main
-      style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}
-    >
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title="Radial Timeline">
@@ -37,9 +37,9 @@ export default function RadialTimelinePage() {
             format.
           </p>
 
-          <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <Section as="div" space="md" className="demo-block">
             <Prototype />
-          </div>
+          </Section>
 
           <h3>Technical Notes</h3>
           <ul>
@@ -52,6 +52,6 @@ export default function RadialTimelinePage() {
           </ul>
         </article>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }

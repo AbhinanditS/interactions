@@ -3,6 +3,14 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Text } from "@/components/ui/Text";
+import {
+  formatDisplayDate,
+  formatStatusLabel,
+  getExternalAnchorProps,
+  isExternalLink,
+} from "@/lib/content/formatters";
 import {
   getPortfolioExplorationBySlug,
   getIterationBySlug,
@@ -51,39 +59,40 @@ export default async function IterationPage({
   }
 
   return (
-    <main style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}>
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title={iteration.title}>
-        <p style={{ marginTop: 0, color: "#666" }}>
+        <Text tone="muted" className="mt-0">
           <Link href={`/portfolio/${exploration.slug}`}>{exploration.title}</Link>
           {" · "}
-          {iteration.date}
+          {formatDisplayDate(iteration.date)}
           {" · "}
-          {iteration.status}
-        </p>
+          {formatStatusLabel(iteration.status)}
+        </Text>
 
         <p>{iteration.summary}</p>
 
-        {(iteration.liveUrl || iteration.figmaUrl) && (
+        {iteration.links.length > 0 && (
           <ul>
-            {iteration.liveUrl && (
-              <li>
-                <a href={iteration.liveUrl} target="_blank" rel="noreferrer">
-                  View live experience
-                </a>
-              </li>
-            )}
-            {iteration.figmaUrl && (
-              <li>
-                <a href={iteration.figmaUrl} target="_blank" rel="noreferrer">
-                  Open Figma file
-                </a>
-              </li>
-            )}
+            {iteration.links.map((link) => {
+              const externalProps = getExternalAnchorProps(link.href);
+
+              return (
+                <li key={link.href}>
+                  {isExternalLink(link.href) ? (
+                    <a href={link.href} {...externalProps}>
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link href={link.href}>{link.label}</Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }

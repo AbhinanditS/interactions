@@ -1,6 +1,9 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Prototype } from "./Prototype";
 
 export const metadata: Metadata = {
@@ -9,9 +12,7 @@ export const metadata: Metadata = {
 
 export default function RunPage() {
   return (
-    <main
-      style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}
-    >
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title="Run Tracker">
@@ -42,9 +43,11 @@ export default function RunPage() {
             connection between cursor and data.
           </p>
 
-          <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
-            <Prototype />
-          </div>
+          <Section as="div" space="md" className="demo-block">
+            <Suspense fallback={null}>
+              <Prototype />
+            </Suspense>
+          </Section>
 
           <h3>Technical Notes</h3>
           <ul>
@@ -57,6 +60,6 @@ export default function RunPage() {
           </ul>
         </article>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }

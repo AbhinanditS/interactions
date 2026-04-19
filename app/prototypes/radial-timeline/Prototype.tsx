@@ -22,12 +22,34 @@ const eventAngleAt = (index: number) =>
   (index / events.length) * Math.PI * 2 - Math.PI / 2;
 
 export function Prototype() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [handAngle, setHandAngle] = useState(0);
   const [selectedEventIndex, setSelectedEventIndex] = useState(0);
   const [isKeyboardMode, setIsKeyboardMode] = useState(false);
-  const [dimensions] = useState({ width: 600, height: 600 });
+  const [dimensions, setDimensions] = useState({ width: 600, height: 600 });
   const { pointer, getRelativePosition } = usePointer();
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const maxSize = 600;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const measuredWidth = entry.contentRect.width;
+      const size = Math.min(measuredWidth, maxSize) || maxSize;
+
+      setDimensions({ width: size, height: size });
+    });
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (isKeyboardMode) {
@@ -46,7 +68,7 @@ export function Prototype() {
     };
 
     updateHandAngle();
-  }, [pointer, dimensions, getRelativePosition, isKeyboardMode]);
+  }, [pointer.clientX, pointer.clientY, dimensions, getRelativePosition, isKeyboardMode]);
 
   useEffect(() => {
     if (!isKeyboardMode) {
@@ -58,16 +80,13 @@ export function Prototype() {
 
   const centerX = dimensions.width / 2;
   const centerY = dimensions.height / 2;
-  const radius = 120;
-  const labelRadius = 160;
+  const radius = dimensions.width * 0.2;
+  const labelRadius = dimensions.width * 0.267;
   const selectedEvent = events[selectedEventIndex];
 
   const stepEvent = (delta: number) => {
     setIsKeyboardMode(true);
-    setSelectedEventIndex((prev) => {
-      const next = (prev + delta + events.length) % events.length;
-      return next;
-    });
+    setSelectedEventIndex((prev) => (prev + delta + events.length) % events.length);
   };
 
   const selectEvent = (index: number) => {
@@ -78,7 +97,17 @@ export function Prototype() {
   return (
     <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
       <div
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}
+        ref={containerRef}
+        tabIndex={0}
+        style={{
+          width: "100%",
+          maxWidth: "600px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 12,
+          outlineOffset: 2,
+        }}
         onKeyDown={(event) => {
           if (event.key === "ArrowRight") {
             event.preventDefault();
@@ -188,6 +217,7 @@ export function Prototype() {
             borderRadius: "8px",
             background: "#fafafa",
             cursor: isKeyboardMode ? "default" : "crosshair",
+            display: "block",
           }}
           onPointerMove={() => {
             if (isKeyboardMode) {
@@ -195,17 +225,7 @@ export function Prototype() {
             }
           }}
         >
-          {/* Outer circle */}
-          <circle
-            cx={centerX}
-            cy={centerY}
-            r={radius}
-            fill="none"
-            stroke="#d0d0d0"
-            strokeWidth="1"
-          />
-
-          {/* Inner circle */}
+          <circle cx={centerX} cy={centerY} r={radius} fill="none" stroke="#d0d0d0" strokeWidth="1" />
           <circle
             cx={centerX}
             cy={centerY}
@@ -215,20 +235,13 @@ export function Prototype() {
             strokeWidth="1"
           />
 
-          {/* Events on timeline */}
           {events.map((event, index) => {
             const eventAngle = eventAngleAt(index);
             const pos = polarToCartesian(radius, eventAngle, centerX, centerY);
-            const labelPos = polarToCartesian(
-              labelRadius,
-              eventAngle,
-              centerX,
-              centerY
-            );
+            const labelPos = polarToCartesian(labelRadius, eventAngle, centerX, centerY);
 
             return (
               <g key={event.time}>
-                {/* Event marker */}
                 <circle
                   cx={pos.x}
                   cy={pos.y}
@@ -236,7 +249,6 @@ export function Prototype() {
                   fill={selectedEventIndex === index ? "#000" : "#999"}
                 />
 
-                {/* Event label */}
                 <text
                   x={labelPos.x}
                   y={labelPos.y}
@@ -255,10 +267,7 @@ export function Prototype() {
             );
           })}
 
-          {/* Center dot */}
           <circle cx={centerX} cy={centerY} r="6" fill="#000" />
-
-          {/* Hand */}
           <line
             x1={centerX}
             y1={centerY}
@@ -268,8 +277,6 @@ export function Prototype() {
             strokeWidth="3"
             strokeLinecap="round"
           />
-
-          {/* Hand tip circle */}
           <circle
             cx={centerX + Math.cos(handAngle) * (radius * 0.7)}
             cy={centerY + Math.sin(handAngle) * (radius * 0.7)}
