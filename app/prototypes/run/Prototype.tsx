@@ -74,7 +74,7 @@ export function Prototype() {
     if (!containerRef.current) return;
     const pos = getRelativePosition(containerRef.current);
     setCursorPos(pos);
-  }, [pointer, getRelativePosition]);
+  }, [pointer.clientX, pointer.clientY, getRelativePosition]);
 
   // Track container width for responsive bars
   useEffect(() => {
