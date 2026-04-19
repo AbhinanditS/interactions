@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { formatStatusWithDate } from "@/lib/content/formatters";
 import { Container } from "@/components/ui/Container";
 import { Text } from "@/components/ui/Text";
 import { getPortfolioExplorationBySlug, portfolioExplorations } from "../data";
@@ -58,9 +59,7 @@ export default async function ExplorationPage({
                 <strong>{iteration.title}</strong>
               </Link>
               <Text as="div" tone="muted" className="meta-row">
-                <small>
-                  {iteration.status} · {iteration.date}
-                </small>
+                <small>{formatStatusWithDate(iteration.status, iteration.date)}</small>
               </Text>
             </li>
           ))}

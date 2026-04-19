@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { formatIterationCount } from "@/lib/content/formatters";
 import { Container } from "@/components/ui/Container";
 import { Text } from "@/components/ui/Text";
 import { portfolioExplorations } from "./data";
@@ -34,8 +35,7 @@ export default function PortfolioIndexPage() {
                 {exploration.summary}
               </Text>
               <Text as="small" tone="subtle">
-                {exploration.iterations.length} iteration
-                {exploration.iterations.length === 1 ? "" : "s"}
+                {formatIterationCount(exploration.iterations.length)}
               </Text>
             </li>
           ))}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatDisplayDate } from "@/lib/content/formatters";
 import { prototypes } from "./prototypes/data";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -45,8 +46,11 @@ export default function PrototypesIndex() {
               <Link href={`/prototypes/${proto.slug}`}>
                 <strong>{proto.title}</strong>
               </Link>
-              <Text tone="muted" className="mt-1">
+              <Text as="div" tone="muted" className="mt-1">
                 {proto.description}
+              </Text>
+              <Text as="small" tone="subtle">
+                {formatDisplayDate(proto.date)}
               </Text>
             </li>
           ))}

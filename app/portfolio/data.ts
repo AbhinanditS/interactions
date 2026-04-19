@@ -1,15 +1,8 @@
-export type PortfolioStatus =
-  | "planned"
-  | "in-progress"
-  | "figma"
-  | "wired"
-  | "built"
-  | "shipped";
+import type { ContentLink, PortfolioStatus } from "@/lib/content/types";
 
-export interface PortfolioLink {
-  label: string;
-  href: string;
-}
+export type { PortfolioStatus } from "@/lib/content/types";
+
+export interface PortfolioLink extends ContentLink {}
 
 export interface PortfolioIteration {
   slug: string;
