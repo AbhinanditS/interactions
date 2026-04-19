@@ -37,7 +37,7 @@ export function Prototype() {
     };
 
     updateHandAngle();
-  }, [pointer, dimensions, getRelativePosition]);
+  }, [pointer.clientX, pointer.clientY, dimensions, getRelativePosition]);
 
   const centerX = dimensions.width / 2;
   const centerY = dimensions.height / 2;
