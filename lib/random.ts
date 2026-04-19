@@ -21,6 +21,7 @@ export function createSeededRandom(seed: SeedInput): RandomSource {
   let state = hashSeed(seed);
 
   return () => {
+    // Mulberry32-style 32-bit PRNG: fast, deterministic, and suitable for mock data generation.
     state = (state + 0x6d2b79f5) | 0;
     let t = Math.imul(state ^ (state >>> 15), 1 | state);
     t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);

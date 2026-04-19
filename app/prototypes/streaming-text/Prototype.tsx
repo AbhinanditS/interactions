@@ -61,6 +61,9 @@ export function Prototype() {
     });
   }, [visibleCount]);
 
+  const speedAnnouncement = `${speed} milliseconds per chunk`;
+  const shimmerAnnouncement = `${Math.round(shimmer * 100)} percent highlight`;
+
   return (
     <div
       style={{
@@ -208,19 +211,27 @@ export function Prototype() {
           }}
         >
           <div style={{ marginBottom: 22 }}>
-            <div style={{ fontSize: 12, color: "#777", marginBottom: 8 }}>
+            <label
+              htmlFor="streaming-speed"
+              style={{ display: "block", fontSize: 12, color: "#777", marginBottom: 8 }}
+            >
               Streaming speed
-            </div>
+            </label>
             <input
+              id="streaming-speed"
               type="range"
               min="40"
               max="280"
               step="10"
               value={speed}
               onChange={(event) => setSpeed(Number(event.target.value))}
+              aria-describedby="streaming-speed-value"
+              aria-valuetext={speedAnnouncement}
               style={{ width: "100%" }}
             />
             <div
+              id="streaming-speed-value"
+              aria-live="polite"
               style={{
                 marginTop: 8,
                 fontSize: 13,
@@ -233,19 +244,27 @@ export function Prototype() {
           </div>
 
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 12, color: "#777", marginBottom: 8 }}>
+            <label
+              htmlFor="streaming-shimmer"
+              style={{ display: "block", fontSize: 12, color: "#777", marginBottom: 8 }}
+            >
               Shimmer intensity
-            </div>
+            </label>
             <input
+              id="streaming-shimmer"
               type="range"
               min="0.1"
               max="1"
               step="0.05"
               value={shimmer}
               onChange={(event) => setShimmer(Number(event.target.value))}
+              aria-describedby="streaming-shimmer-value"
+              aria-valuetext={shimmerAnnouncement}
               style={{ width: "100%" }}
             />
             <div
+              id="streaming-shimmer-value"
+              aria-live="polite"
               style={{
                 marginTop: 8,
                 fontSize: 13,

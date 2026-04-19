@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { createSeededRandom, type RandomSource } from "@/lib/random";
 import { usePointer } from "@/lib/usePointer";
@@ -48,13 +48,13 @@ function generateMockData(random: RandomSource): Activity[] {
 }
 
 const RunIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7" />
   </svg>
 );
 
 const RideIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M15.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5zm5.8-10l2.4-2.4.8.8c1.3 1.3 3 2.1 5.1 2.1V9c-1.5 0-2.7-.6-3.6-1.5l-1.9-1.9c-.5-.4-1-.6-1.6-.6s-1.1.2-1.4.6L7.8 8.4c-.4.4-.6.9-.6 1.4 0 .6.2 1.1.6 1.4L11 14v5h2v-6.2l-2.2-2.3zM19 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5z" />
   </svg>
 );
@@ -64,16 +64,24 @@ export function Prototype() {
   const barsRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const { pointer, getRelativePosition } = usePointer();
+  const prefersReducedMotion = useReducedMotion();
 
   const [isOverBars, setIsOverBars] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [pointerHoveredIndex, setPointerHoveredIndex] = useState<number | null>(null);
+  const [keyboardIndex, setKeyboardIndex] = useState(0);
+  const [isKeyboardMode, setIsKeyboardMode] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [containerWidth, setContainerWidth] = useState(800);
   const [regenerationCount, setRegenerationCount] = useState(0);
 
-  const configuredSeed =
-    searchParams.get(SEED_QUERY_PARAM) ?? DEFAULT_ACTIVITY_SEED;
-  const isExplorationMode = searchParams.get(EXPLORE_QUERY_PARAM) === "1";
+  const configuredSeed = useMemo(
+    () => searchParams.get(SEED_QUERY_PARAM)?.trim() || DEFAULT_ACTIVITY_SEED,
+    [searchParams]
+  );
+  const isExplorationMode = useMemo(
+    () => searchParams.get(EXPLORE_QUERY_PARAM) === "1",
+    [searchParams]
+  );
   const activitySeed = `${configuredSeed}:${regenerationCount}`;
 
   const activities = useMemo(() => {
@@ -85,12 +93,14 @@ export function Prototype() {
     [activities]
   );
 
+  const activeIndex = isKeyboardMode ? keyboardIndex : pointerHoveredIndex;
+
   // Update cursor position
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isKeyboardMode) return;
     const pos = getRelativePosition(containerRef.current);
     setCursorPos(pos);
-  }, [pointer.clientX, pointer.clientY, getRelativePosition]);
+  }, [pointer, getRelativePosition, isKeyboardMode]);
 
   // Track container width for responsive bars
   useEffect(() => {
@@ -114,8 +124,8 @@ export function Prototype() {
 
   // Find which bar is being hovered
   useEffect(() => {
-    if (!barsRef.current || !isOverBars) {
-      setHoveredIndex(null);
+    if (!barsRef.current || !isOverBars || isKeyboardMode) {
+      setPointerHoveredIndex(null);
       return;
     }
 
@@ -123,20 +133,19 @@ export function Prototype() {
     const relativeX = cursorPos.x - 40; // Account for padding
 
     if (relativeX < 0 || relativeX > barsRect.width) {
-      setHoveredIndex(null);
+      setPointerHoveredIndex(null);
       return;
     }
 
     const index = Math.floor(relativeX / (barWidth + barGap));
     if (index >= 0 && index < activities.length) {
-      setHoveredIndex(index);
+      setPointerHoveredIndex(index);
     } else {
-      setHoveredIndex(null);
+      setPointerHoveredIndex(null);
     }
-  }, [cursorPos, isOverBars, barWidth, barGap, activities.length]);
+  }, [cursorPos, isOverBars, barWidth, barGap, activities.length, isKeyboardMode]);
 
-  const hoveredActivity =
-    hoveredIndex !== null ? activities[hoveredIndex] : null;
+  const hoveredActivity = activeIndex !== null ? activities[activeIndex] : null;
   const hoveredBarHeight = hoveredActivity
     ? (hoveredActivity.distance / maxDistance) * maxBarHeight
     : 0;
@@ -147,15 +156,30 @@ export function Prototype() {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
+  const hasActiveSelection = activeIndex !== null && (isOverBars || isKeyboardMode);
+
   // Calculate snapped X position for cursor
   const snappedX =
-    hoveredIndex !== null
-      ? 40 + hoveredIndex * (barWidth + barGap) + barWidth / 2
+    activeIndex !== null
+      ? 40 + activeIndex * (barWidth + barGap) + barWidth / 2
       : cursorPos.x;
+
+  const showFallbackCursor = Boolean(prefersReducedMotion || isKeyboardMode);
+
+  const moveSelection = (nextIndex: number) => {
+    const clampedIndex = Math.min(activities.length - 1, Math.max(0, nextIndex));
+    setKeyboardIndex(clampedIndex);
+    setIsKeyboardMode(true);
+    setIsOverBars(true);
+  };
 
   return (
     <div
       ref={containerRef}
+      tabIndex={0}
+      role="application"
+      aria-label="Activity distance bar chart"
+      aria-describedby="run-chart-description run-chart-selection"
       style={{
         position: "relative",
         width: "100%",
@@ -164,11 +188,65 @@ export function Prototype() {
         border: "1px solid #e0e0e0",
         borderRadius: 8,
         overflow: "hidden",
-        cursor: "none",
+        cursor: showFallbackCursor ? "crosshair" : "none",
+        outlineOffset: 2,
       }}
       onMouseEnter={() => setIsOverBars(true)}
       onMouseLeave={() => setIsOverBars(false)}
+      onMouseMove={() => {
+        if (isKeyboardMode) {
+          setIsKeyboardMode(false);
+        }
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          moveSelection((activeIndex ?? keyboardIndex) + 1);
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          moveSelection((activeIndex ?? keyboardIndex) - 1);
+          return;
+        }
+
+        if (event.key === "Home") {
+          event.preventDefault();
+          moveSelection(0);
+          return;
+        }
+
+        if (event.key === "End") {
+          event.preventDefault();
+          moveSelection(activities.length - 1);
+          return;
+        }
+
+        if (event.key === "Escape") {
+          setIsKeyboardMode(false);
+          setPointerHoveredIndex(null);
+        }
+      }}
     >
+      <p
+        id="run-chart-description"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
+      >
+        Bar chart of run and ride distances across the year. Use left and right arrow keys
+        to inspect each day. Press Home or End to jump to the start or end.
+      </p>
+
       {/* Header */}
       <div
         style={{
@@ -258,9 +336,7 @@ export function Prototype() {
                 {hoveredActivity.type === "run" ? " min/km" : " km/h"}
               </span>
             </div>
-            <div style={{ fontSize: 11, color: "#999" }}>
-              {formatDate(hoveredActivity.date)}
-            </div>
+            <div style={{ fontSize: 11, color: "#999" }}>{formatDate(hoveredActivity.date)}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -268,6 +344,11 @@ export function Prototype() {
       {/* Bars container */}
       <div
         ref={barsRef}
+        role="listbox"
+        aria-label="Daily distance bars"
+        aria-activedescendant={
+          activeIndex !== null ? `activity-bar-${activeIndex}` : undefined
+        }
         style={{
           display: "flex",
           alignItems: "flex-end",
@@ -279,16 +360,22 @@ export function Prototype() {
       >
         {activities.map((activity, index) => {
           const height = (activity.distance / maxDistance) * maxBarHeight;
-          const isHovered = hoveredIndex === index;
+          const isHovered = activeIndex === index;
           const isRide = activity.type === "ride";
 
           return (
             <motion.div
               key={activity.date}
+              id={`activity-bar-${index}`}
+              role="option"
+              aria-selected={isHovered}
+              aria-label={`${formatDate(activity.date)} ${activity.distance.toFixed(2)} kilometers ${
+                isRide ? "ride" : "run"
+              }`}
               initial={false}
               animate={{
                 height,
-                opacity: hoveredIndex === null ? 0.7 : isHovered ? 1 : 0.3,
+                opacity: activeIndex === null ? 0.7 : isHovered ? 1 : 0.3,
               }}
               transition={{ duration: 0.15 }}
               style={{
@@ -326,20 +413,38 @@ export function Prototype() {
         )}
       </AnimatePresence>
 
+      <div
+        id="run-chart-selection"
+        aria-live="polite"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
+      >
+        {hoveredActivity
+          ? `${formatDate(hoveredActivity.date)} ${hoveredActivity.distance.toFixed(2)} kilometers ${
+              hoveredActivity.type
+            }`
+          : "No bar selected"}
+      </div>
+
       {/* Cursor dot / line */}
       <motion.div
         initial={false}
         animate={{
           x: snappedX,
-          y:
-            isOverBars && hoveredIndex !== null
-              ? 310 - hoveredBarHeight
-              : cursorPos.y,
-          width: isOverBars && hoveredIndex !== null ? 2 : 12,
-          height:
-            isOverBars && hoveredIndex !== null ? hoveredBarHeight + 40 : 12,
-          borderRadius: isOverBars && hoveredIndex !== null ? 1 : 6,
-          opacity: pointer.isActive ? 1 : 0,
+          y: hasActiveSelection ? 310 - hoveredBarHeight : cursorPos.y,
+          width: hasActiveSelection ? 2 : 12,
+          height: hasActiveSelection ? hoveredBarHeight + 40 : 12,
+          borderRadius: hasActiveSelection ? 1 : 6,
+          opacity: showFallbackCursor ? (hasActiveSelection ? 1 : 0.45) : pointer.isActive ? 1 : 0,
         }}
         transition={{
           type: "spring",

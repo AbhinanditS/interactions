@@ -63,6 +63,7 @@ export function usePointer() {
 
     window.addEventListener('pointermove', handlePointerMove)
     window.addEventListener('pointerleave', handlePointerLeave)
+    // Ensure pointer state resets when the tab/window loses focus.
     window.addEventListener('blur', handlePointerLeave)
 
     return () => {
