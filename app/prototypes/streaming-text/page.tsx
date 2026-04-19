@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Prototype } from "./Prototype";
 
 export const metadata: Metadata = {
@@ -9,9 +11,7 @@ export const metadata: Metadata = {
 
 export default function StreamingTextPage() {
   return (
-    <main
-      style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}
-    >
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title="Streaming Text">
@@ -29,9 +29,9 @@ export default function StreamingTextPage() {
             to spot.
           </p>
 
-          <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+          <Section as="div" space="md" className="demo-block">
             <Prototype />
-          </div>
+          </Section>
 
           <h3>How It Works</h3>
           <p>
@@ -57,6 +57,6 @@ export default function StreamingTextPage() {
           </ul>
         </article>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }

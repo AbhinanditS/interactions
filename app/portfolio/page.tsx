@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { BackToHomeLink } from "@/components/BackToHomeLink";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
+import { Container } from "@/components/ui/Container";
+import { Text } from "@/components/ui/Text";
 import { portfolioExplorations } from "./data";
 
 export const metadata: Metadata = {
@@ -12,33 +14,33 @@ export const metadata: Metadata = {
 
 export default function PortfolioIndexPage() {
   return (
-    <main style={{ maxWidth: "900px", margin: "0 auto", paddingBottom: "4rem" }}>
+    <Container as="main" size="md" className="pb-page">
       <BackToHomeLink />
 
       <PrototypeFrame title="Portfolio">
-        <p style={{ marginTop: 0 }}>
+        <p className="mt-0">
           A catalog of product explorations and shipped iterations. Prototypes
           stay in <code>/prototypes</code> and this section tracks portfolio
           history.
         </p>
 
-        <ul style={{ listStyle: "none", padding: 0, margin: "1.5rem 0 0" }}>
+        <ul className="list-unstyled list-gap-lg mt-5">
           {portfolioExplorations.map((exploration) => (
-            <li key={exploration.slug} style={{ marginBottom: "1.5rem" }}>
+            <li key={exploration.slug}>
               <Link href={`/portfolio/${exploration.slug}`}>
                 <strong>{exploration.title}</strong>
               </Link>
-              <p style={{ margin: "0.35rem 0 0.5rem", color: "#666" }}>
+              <Text tone="muted" className="meta-copy">
                 {exploration.summary}
-              </p>
-              <small style={{ color: "#777" }}>
+              </Text>
+              <Text as="small" tone="subtle">
                 {exploration.iterations.length} iteration
                 {exploration.iterations.length === 1 ? "" : "s"}
-              </small>
+              </Text>
             </li>
           ))}
         </ul>
       </PrototypeFrame>
-    </main>
+    </Container>
   );
 }

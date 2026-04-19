@@ -1,5 +1,8 @@
-import { prototypes } from "./prototypes/data";
 import Link from "next/link";
+import { prototypes } from "./prototypes/data";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { Text } from "@/components/ui/Text";
 
 const portfolioHighlights = [
   "Narrative-driven interaction studies",
@@ -9,54 +12,46 @@ const portfolioHighlights = [
 
 export default function PrototypesIndex() {
   return (
-    <main style={{ maxWidth: "800px", margin: "0 auto" }}>
+    <Container as="main" size="sm">
       <h1>Interactions</h1>
       <p>A collection of interactions and explorations.</p>
 
-      <section style={{ marginBottom: "2.5rem" }}>
-        <h2 style={{ marginBottom: "0.5rem" }}>Portfolio Iterations</h2>
-        <p style={{ color: "#666", marginTop: 0 }}>
+      <Section space="lg">
+        <h2 className="mb-2">Portfolio Iterations</h2>
+        <Text tone="muted" className="mt-0">
           Curated explorations and refinements from prototype work.
-        </p>
+        </Text>
 
-        <Link
-          href="/portfolio"
-          style={{
-            display: "inline-block",
-            fontWeight: 700,
-            padding: "0.6rem 0.9rem",
-            border: "1px solid #111",
-            borderRadius: "8px",
-            marginBottom: "0.9rem",
-          }}
-        >
+        <Link href="/portfolio" className="home-cta-link">
           Open Portfolio Iterations →
         </Link>
 
-        <ul style={{ marginTop: "0.75rem", color: "#666" }}>
+        <ul className="mt-3">
           {portfolioHighlights.map((highlight) => (
-            <li key={highlight} style={{ marginBottom: "0.35rem" }}>
-              {highlight}
+            <li key={highlight}>
+              <Text as="span" tone="muted">
+                {highlight}
+              </Text>
             </li>
           ))}
         </ul>
-      </section>
+      </Section>
 
-      <section>
+      <Section space="none">
         <h2>Prototypes</h2>
-        <ul style={{ listStyle: "none", marginLeft: 0 }}>
+        <ul className="list-unstyled-tight list-gap-lg">
           {prototypes.map((proto) => (
-            <li key={proto.slug} style={{ marginBottom: "1.5rem" }}>
+            <li key={proto.slug}>
               <Link href={`/prototypes/${proto.slug}`}>
                 <strong>{proto.title}</strong>
               </Link>
-              <p style={{ marginTop: "0.25rem", color: "#666", marginBottom: 0 }}>
+              <Text tone="muted" className="mt-1">
                 {proto.description}
-              </p>
+              </Text>
             </li>
           ))}
         </ul>
-      </section>
-    </main>
+      </Section>
+    </Container>
   );
 }
